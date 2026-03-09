@@ -14,7 +14,8 @@
     "@xterm/xterm": "^5.5.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-xtermjs": "^1.0.10"
+    "react-xtermjs": "^1.0.10",
+    "tldraw": "^4.4.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -1,9 +1,11 @@
 import { Editor } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import type { Monaco } from "@monaco-editor/react";
 import { useXTerm } from "react-xtermjs";
 
 import { useRef, useEffect, useState } from "react";
+
+import { Tldraw } from "tldraw";
+import "tldraw/tldraw.css";
 
 type TerminalProps = {
   terminalText: string;
@@ -25,10 +27,7 @@ export default function Room() {
   const [consoleOutput, setConsoleOutput] = useState(
     "Welcome to EasyCodeShare!",
   );
-  const handleEditorDidMount = (
-    codeEditor: editor.IStandaloneCodeEditor,
-    monaco: Monaco,
-  ) => {
+  const handleEditorDidMount = (codeEditor: editor.IStandaloneCodeEditor) => {
     editorRef.current = codeEditor;
   };
 
@@ -55,6 +54,11 @@ export default function Room() {
       />
       <button onClick={processCode}></button>
       <Terminal terminalText={consoleOutput} />
+      <div>
+        <div style={{ width: "100%", height: "500px" }}>
+          <Tldraw />
+        </div>
+      </div>
     </>
   );
 }
