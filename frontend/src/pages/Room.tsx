@@ -1,36 +1,30 @@
 import { Editor } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import type { Monaco } from "@monaco-editor/react";
-import { useXTerm, XTerm } from "react-xtermjs";
+import { useXTerm } from "react-xtermjs";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
-const Terminal = () => {
-  const onData = (data: string) => {
-    console.log(`Received data: ${data}`);
-  };
+type TerminalProps = {
+  terminalText: string;
+};
 
-  const onResize = (event: { cols: number; rows: number }) => {
-    console.log(
-      `Terminal resized to ${event.cols} columns and ${event.rows} rows`,
-    );
-  };
+const Terminal = ({ terminalText }: TerminalProps) => {
+  const { instance, ref } = useXTerm();
 
-  return (
-    <XTerm
-      options={{ cursorBlink: true }}
-      style={{ width: "100%", height: "100%" }}
-      listeners={{
-        onData,
-        onResize,
-      }}
-    />
-  );
+  useEffect(() => {
+    instance?.clear();
+    instance?.writeln(terminalText);
+  }, [terminalText]);
+
+  return <div ref={ref} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default function Room() {
   const editorRef = useRef<editor.IStandaloneCodeEditor>(null);
-
+  const [consoleOutput, setConsoleOutput] = useState(
+    "Welcome to EasyCodeShare!",
+  );
   const handleEditorDidMount = (
     codeEditor: editor.IStandaloneCodeEditor,
     monaco: Monaco,
@@ -38,8 +32,17 @@ export default function Room() {
     editorRef.current = codeEditor;
   };
 
-  const processCode = () => {
-    console.log(editorRef.current?.getValue());
+  const processCode = async () => {
+    const code_text = editorRef.current?.getValue();
+    const res = await fetch("http://127.0.0.1:8000/submissions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code_text: code_text }),
+    });
+    const data = await res.json();
+    setConsoleOutput(data.code);
   };
 
   return (
@@ -51,7 +54,7 @@ export default function Room() {
         onMount={handleEditorDidMount}
       />
       <button onClick={processCode}></button>
-      <Terminal />
+      <Terminal terminalText={consoleOutput} />
     </>
   );
 }
