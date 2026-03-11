@@ -1,3 +1,4 @@
 judge0
+requests
 dotenv
 fastapi[standard]
