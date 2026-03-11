@@ -1,6 +1,7 @@
 venv
 .env
 __pycache__
+judge0.conf
 
 # Logs
 logs
